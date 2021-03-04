@@ -5,7 +5,7 @@ import { api, handleError } from '../../helpers/api';
 import Player from '../../views/Player';
 import { Spinner } from '../../views/design/Spinner';
 import { Button } from '../../views/design/Button';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 const Container = styled(BaseContainer)`
   color: white;
@@ -28,12 +28,13 @@ class Game extends React.Component {
   constructor() {
     super();
     this.state = {
-      users: null
+      users: null,
     };
   }
 
-  logout() {
+  async logout() {
     localStorage.removeItem('token');
+    await api.put('/users/'+localStorage.getItem("id"));
     this.props.history.push('/login');
   }
 
@@ -46,7 +47,9 @@ class Game extends React.Component {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Get the returned users and update the state.
-      this.setState({ users: response.data });
+      this.setState({
+        users: response.data,
+      });
 
       // This is just some data for you to see what is available.
       // Feel free to remove it.
@@ -65,6 +68,7 @@ class Game extends React.Component {
   render() {
     return (
       <Container>
+        <h2>Welcome {"\""+localStorage.getItem("username")+"\""}! </h2>
         <h2>Happy Coding! </h2>
         <p>Get all users from secure end point:</p>
         {!this.state.users ? (
@@ -75,7 +79,7 @@ class Game extends React.Component {
               {this.state.users.map(user => {
                 return (
                   <PlayerContainer key={user.id}>
-                    <Player user={user} />
+                      <Player user={user}/>
                   </PlayerContainer>
                 );
               })}
