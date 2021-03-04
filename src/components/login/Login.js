@@ -5,6 +5,7 @@ import { api, handleError } from '../../helpers/api';
 import User from '../shared/models/User';
 import { withRouter } from 'react-router-dom';
 import { Button } from '../../views/design/Button';
+import {Link} from 'react-router-dom'
 
 const FormContainer = styled.div`
   margin-top: 2em;
@@ -75,8 +76,8 @@ class Login extends React.Component {
   constructor() {
     super();
     this.state = {
-      name: null,
-      username: null
+      username: null,
+      password: null,
     };
   }
   /**
@@ -88,7 +89,7 @@ class Login extends React.Component {
     try {
       const requestBody = JSON.stringify({
         username: this.state.username,
-        name: this.state.name
+        password: this.state.password
       });
       const response = await api.post('/users', requestBody);
 
@@ -137,16 +138,16 @@ class Login extends React.Component {
                 this.handleInputChange('username', e.target.value);
               }}
             />
-            <Label>Name</Label>
+            <Label>PASSWORD</Label>
             <InputField
               placeholder="Enter here.."
               onChange={e => {
-                this.handleInputChange('name', e.target.value);
+                this.handleInputChange('password', e.target.value);
               }}
             />
             <ButtonContainer>
               <Button
-                disabled={!this.state.username || !this.state.name}
+                disabled={!this.state.username || !this.state.password}
                 width="50%"
                 onClick={() => {
                   this.login();
@@ -155,6 +156,15 @@ class Login extends React.Component {
                 Login
               </Button>
             </ButtonContainer>
+
+            <Link to="/registration">
+              <ButtonContainer>
+                <Button width="50%">
+                  register now
+                </Button>
+              </ButtonContainer>
+            </Link>
+
           </Form>
         </FormContainer>
       </BaseContainer>
