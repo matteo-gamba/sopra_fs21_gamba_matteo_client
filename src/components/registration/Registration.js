@@ -84,7 +84,7 @@ class Registration extends React.Component {
      * If the request is successful, a new user is returned to the front-end
      * and its token is stored in the localStorage.
      */
-    async login() {
+    async register() {
         try {
             const requestBody = JSON.stringify({
                 username: this.state.username,
@@ -149,7 +149,7 @@ class Registration extends React.Component {
                                 disabled={!this.state.username || !this.state.password}
                                 width="50%"
                                 onClick={() => {
-                                    this.login();
+                                    this.register();
                                 }}
                             >
                                 Register
