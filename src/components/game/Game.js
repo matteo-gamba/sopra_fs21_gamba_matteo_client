@@ -78,9 +78,11 @@ class Game extends React.Component {
             <Users>
               {this.state.users.map(user => {
                 return (
-                  <PlayerContainer key={user.id}>
-                      <Player user={user}/>
-                  </PlayerContainer>
+                    <PlayerContainer key={user.id}>
+                      <Link to={'/game/userdetails/' + user.id}>
+                        <Player user={user}/>
+                      </Link>
+                    </PlayerContainer>
                 );
               })}
             </Users>
