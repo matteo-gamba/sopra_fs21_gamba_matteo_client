@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { BaseContainer } from '../../helpers/layout';
 import {api, handleError} from '../../helpers/api';
-import {Link, withRouter} from 'react-router-dom';
+import {Link, Redirect, withRouter} from 'react-router-dom';
 import {Button} from "../../views/design/Button";
 
 const Container = styled(BaseContainer)`
@@ -10,17 +10,6 @@ const Container = styled(BaseContainer)`
   text-align: center;
 `;
 
-const Users = styled.ul`
-  list-style: none;
-  padding-left: 0;
-`;
-
-const PlayerContainer = styled.li`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -28,18 +17,15 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
+
 class EditUser extends React.Component {
     constructor() {
         super();
         this.state = {
-            username: '',
-            birthdate: '',
-            validUsername: true,
-            validBirthdate: true,
-            validForm: true
+            username: "",
+            birthdate: "",
         };
         this.handleChange = this.handleChange.bind(this)
-        this.validateInput = this.validateInput.bind(this)
     }
 
     async componentDidMount() {
@@ -50,7 +36,7 @@ class EditUser extends React.Component {
 
             this.setState({
                 username: user.username,
-                birthdate: user.birthdate
+                birthdate: user.birthdate ? user.birthdate : ""
             })
         } catch (error) {
             alert(`Something went wrong while fetching the user data: \n${handleError(error)}`);
@@ -58,22 +44,21 @@ class EditUser extends React.Component {
     }
 
     handleChange(event){
-        this.setState({[event.target.name]: event.target.value})
-        this.validateInput(event.target.name)
+        this.setState({ [event.target.name]: event.target.value })
     }
 
-    validateInput(inputField){
-        switch(inputField){
-            case "username":
-                if (this.state.username.length <= 3){
-                    this.setState({validUsername: false})
-                }
-                else{this.setState({validUsername: true})}
-                break;
+    async handleSubmit(event){
+        try {
+            const requestBody = JSON.stringify({
+                username: this.state.username,
+                birthdate: this.state.birthdate
+            });
+            const response = await api.post("/users/" + localStorage.id, requestBody);
 
-            case "birthdate":
-                this.setState({validUsername: true})
-                break;
+            localStorage.setItem("username", this.state.username);
+            //alert('game/userdetails/'+localStorage.getItem("id"));
+        } catch (error) {
+            alert(`Something went wrong during the login: \n${handleError(error)}`);
         }
     }
 
@@ -90,7 +75,6 @@ class EditUser extends React.Component {
                         value={this.state.username}
                         onChange= {this.handleChange}
                     />
-                    {this.state.validUsername ? <p>username is valid</p> : <p>username is invalid</p>}
 
                     <h3>birthdate: (format: YYYY-MM-DD) {this.state.birthdate}</h3>
                     <input
@@ -100,10 +84,14 @@ class EditUser extends React.Component {
                         value={this.state.birthdate}
                         onChange={this.handleChange}
                     />
-                    {this.state.validBirthdate ? <p>birthdate is valid</p> : <p>birthdate is invalid</p>}
 
                     <ButtonContainer>
-                        <Button>
+                        <Button
+                            //disabled={!this.state.validForm}
+                            onClick={() => {
+                                this.handleSubmit();
+                            }}
+                        >
                             Save changes
                         </Button>
                     </ButtonContainer>
@@ -113,4 +101,4 @@ class EditUser extends React.Component {
     }
 }
 
-export default withRouter(EditUser);
+export default withRouter(EditUser)

@@ -4,6 +4,7 @@ import { BaseContainer } from '../../helpers/layout';
 import {api, handleError} from '../../helpers/api';
 import {Link, withRouter} from 'react-router-dom';
 import {Button} from "../../views/design/Button";
+import EditUsersButton from "./EditUsersButton";
 
 const Container = styled(BaseContainer)`
   color: white;
@@ -61,13 +62,6 @@ class UserDetails extends React.Component {
                 <p>Creation Date: {this.state.user ? this.state.user.creationDate : ''}</p>
                 <p>ID: {this.state.user ? this.state.user.id : ''}</p>
                 {(this.state.user && this.state.user.birthdate) ? <p>Birth date: {this.state.user.birthdate}</p>: ''}
-                <Link to="/game/editusers">
-                    <ButtonContainer>
-                        <Button width="50%">
-                            Edit user
-                        </Button>
-                    </ButtonContainer>
-                </Link>
                 <Link to="/game">
                     <ButtonContainer>
                         <Button width="50%">
